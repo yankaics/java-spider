@@ -14,6 +14,9 @@ import indi.zhangzqit.javaspider.queue.RepostUrlQueue;
 import indi.zhangzqit.javaspider.utils.Utils;
 import indi.zhangzqit.javaspider.worker.BasicWorker;
 
+/**
+ * 从UrlQueue中取出url，下载页面，分析url，保存已访问rul
+ */
 public class UrlRepostWorker extends BasicWorker implements Runnable {
 	private static final Logger Log = Logger.getLogger(UrlRepostWorker.class.getName());
 	protected String dataHandler(String url){

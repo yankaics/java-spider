@@ -27,6 +27,9 @@ public class CommentFetcher {
 	private static final Logger Log = Logger.getLogger(CommentFetcher.class
 			.getName());
 
+	/**
+	 * 根据url爬取网页内容
+	 */
 	public static Page getContentFromUrl(String url){
 		String content = null;
 		Document contentDoc = null;
@@ -37,6 +40,7 @@ public class CommentFetcher {
 	    HttpConnectionParams.setSoTimeout(params, 10 * 1000);	    
 		AbstractHttpClient httpClient = new DefaultHttpClient(params);
 		HttpGet getHttp = new HttpGet(url);	
+		// 设置HTTP Header
 		getHttp.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0");
 		HttpResponse response;
 		
@@ -45,6 +49,7 @@ public class CommentFetcher {
 			HttpEntity entity = response.getEntity();		  
 			  
 			if(entity != null){
+				// 转化为文本信息, 设置爬取网页的字符集，防止乱码
 				content = EntityUtils.toString(entity, "UTF-8");
 				
 				String returnMsg = Utils.checkContent(content, url, FetcherType.COMMENT);

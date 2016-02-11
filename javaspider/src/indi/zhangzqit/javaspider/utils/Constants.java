@@ -9,6 +9,7 @@ public class Constants {
 	public static String FORBIDDEN_PAGE = "http://weibo.cn/pub";
 	public static String FORBIDDEN_PAGE_TITILE = "<title>微博广场</title>";
 
+	// 抓取数据的本地存储路径，根目录
 	public static String ROOT_DISK;
 	public static String REPOST_LOG_PATH;
 	public static String COMMENT_LOG_PATH;
@@ -27,6 +28,7 @@ public class Constants {
 	public static int LEVEL = 3;
 	public static int FANS_NO_MORE_THAN = Integer.MAX_VALUE;
 
+	// 是否检查微博数
 	public static boolean CHECK_WEIBO_NUM = false;
 	public static int WEIBO_NO_MORE_THAN = Integer.MAX_VALUE;
 

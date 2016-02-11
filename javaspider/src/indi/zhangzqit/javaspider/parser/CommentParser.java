@@ -24,6 +24,7 @@ public class CommentParser {
 		return Jsoup.parse(content);
 	}
 	
+	// 截取网页源文件的目标内容
 	public static List<Element> getGoalContent(Document doc) {
 		List<Element> commentItems = new ArrayList<Element>();
 		
@@ -37,6 +38,7 @@ public class CommentParser {
 		return commentItems;
 	}
 
+	// 解析每一条评论的结构，创建Comment对象    
 	public static Comment parse(Element commentEl, String weiboID){
 		Comment comment = new Comment();
 		
@@ -47,6 +49,7 @@ public class CommentParser {
 			String tempAuthor = commentEl.getElementsByAttribute("href").get(0).attr("href");			
 			comment.setAuthor(tempAuthor.substring(tempAuthor.lastIndexOf("/") + 1,tempAuthor.lastIndexOf("?")));
 			
+			//获取一条评论内的有效内容，包括@的人 
 			String tempContent = commentEl.getElementsByClass("ctt").get(0).toString();
 			comment.setContent(tempContent.substring(18, tempContent.length() - 7));
 			comment.setTime(Utils.parseDate(commentEl.getElementsByClass("ct").get(0).text().split("来自")[0]));
@@ -60,9 +63,11 @@ public class CommentParser {
 		return comment;
 	}
 	
+	// 将抓取的微博信息保存至本地文件
  	public static void createFile(List<Element> commentItems, String urlPath) {
 		String weiboID = Utils.getUserIdFromUrl(urlPath);
 		
+		// 解析每一条评论，提取各部分内容，写入数据库 
 		PreparedStatement ps;
 		try{
 			ps = conn.prepareStatement("INSERT INTO comment (weiboID, poster, content, postTime) VALUES (?, ?, ?, ?)");

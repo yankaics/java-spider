@@ -15,10 +15,14 @@ import indi.zhangzqit.javaspider.queue.FollowUrlQueue;
 import indi.zhangzqit.javaspider.utils.Utils;
 import indi.zhangzqit.javaspider.worker.BasicWorker;
 
+/**
+ * 从UrlQueue中取出url，下载页面，分析url，保存已访问url
+ */
 public class UrlFollowWorker extends BasicWorker implements Runnable {
 	private static final Logger Log = Logger.getLogger(UrlFollowWorker.class.getName());
 	public static int CURRENT_LEVEL = 0;
 	
+	// 返回值：被封账号/系统繁忙/OK
 	protected String dataHandler(String url){
 		return null;
 	}
@@ -54,10 +58,12 @@ public class UrlFollowWorker extends BasicWorker implements Runnable {
 					
 					if(FollowUrlQueue.isEmpty()){
 						
+						// 仍为空，从数据库中取
 						if(FollowUrlQueue.isEmpty()){
 							Log.info(">> Add new follow Url...");
 							CURRENT_LEVEL = Utils.initializeFollowUrl();
 							
+							// 拿完还是空，退出爬虫
 							if(FollowUrlQueue.isEmpty()){
 								Log.info(">> All followees of all followers have been fetched...");
 								break;
@@ -77,6 +83,7 @@ public class UrlFollowWorker extends BasicWorker implements Runnable {
 			Log.error(e);
 		}
 		
+		// 关闭数据库连接
 		try {
 			FollowParser.conn.close();
 			Utils.conn.close();

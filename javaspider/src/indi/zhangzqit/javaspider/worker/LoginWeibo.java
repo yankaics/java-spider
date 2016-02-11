@@ -45,6 +45,7 @@ public class LoginWeibo {
         String gsid = null;
         
         try {
+        	// 1. 创建GET请求，获取动态的Password Name和action参数，并设置PostForm值 
 	        String pwdName = null;
 	        String action = null;
 	        List<NameValuePair> formParams = new ArrayList<NameValuePair>();
@@ -87,7 +88,8 @@ public class LoginWeibo {
     		formParams.add(new BasicNameValuePair(pwdName, password));
     		formParams.add(new BasicNameValuePair("submit", "登录"));
     		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(formParams, "UTF-8");
-    		
+
+    		// 2. 创建一个HTTP Post请求对象，提交登录信息
 	        HttpPost loginPost = new HttpPost(LOGIN_URL + action);
 	        
 	        loginPost.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0");
@@ -111,6 +113,7 @@ public class LoginWeibo {
         		}
         	}	
         	
+        	// 3. 创建一个HTTP GET请求对象    
             HttpGet httpGet = new HttpGet(PROFILE_URL + "?" + gsid);	
     		
             httpGet.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0");
@@ -138,6 +141,7 @@ public class LoginWeibo {
 			client.getConnectionManager().shutdown();
 		}
         
+		// 账号被禁，跳转到微博广场，所以返回null
         if(content == null || content.contains(Constants.FORBIDDEN_PAGE_TITILE)){
         	return null;
         }
@@ -149,6 +153,7 @@ public class LoginWeibo {
         CookieStore cookie = null;
         
         try {
+        	// 1. 创建GET请求，获取动态的Password Name和action参数，并设置PostForm值 
 	        String pwdName = null;
 	        String action = null;
 	        List<NameValuePair> formParams = new ArrayList<NameValuePair>();
@@ -192,6 +197,7 @@ public class LoginWeibo {
     		formParams.add(new BasicNameValuePair("submit", "登录"));
     		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(formParams, "UTF-8");
     		
+    		// 2. 创建一个HTTP Post请求对象，提交登录信息 
 	        HttpPost loginPost = new HttpPost(LOGIN_URL + action);
 	        
 	        loginPost.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0");
@@ -215,6 +221,7 @@ public class LoginWeibo {
         		}
         	}	
         	
+        	// 3. 创建一个HTTP GET请求对象 
             HttpGet httpGet = new HttpGet(PROFILE_URL + "?" + gsid);	
     		
             httpGet.setHeader("User-Agent","Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0");

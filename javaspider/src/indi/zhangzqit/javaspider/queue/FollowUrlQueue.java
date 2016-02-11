@@ -3,7 +3,9 @@ package indi.zhangzqit.javaspider.queue;
 import java.util.LinkedList;
 
 public class FollowUrlQueue {
+	// 超链接队列  
 	public static LinkedList<String> followUrlQueue = new LinkedList<String>();
+	// 队列中对应最多的超链接数量
 	public static final int MAX_SIZE = 10000;
 	
 	public synchronized static void addElement(String url){

@@ -68,6 +68,7 @@ public class LoginWeiboBackup {
 			response = client.execute(httpGet);
 			entity = response.getEntity();
 			if (entity != null) {
+				// 转化为文本信息, 设置爬取网页的字符集，防止乱码
 				content = EntityUtils.toString(entity, "UTF-8");
 			}
 

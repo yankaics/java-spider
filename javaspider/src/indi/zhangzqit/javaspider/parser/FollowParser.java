@@ -29,6 +29,7 @@ public class FollowParser {
 		return doc.getElementsByTag("table");
 	}
 
+	// 解析每一条followee的结构，创建Follow对象
 	public static Follow parse(Element followEl, String followerID, int currentLevel){
 		Follow follow = new Follow();
 		try {
@@ -41,6 +42,7 @@ public class FollowParser {
 				}
 			}
 			
+			// 根据fansOfFollowee进行过滤
 			if(fansOfFollowee > Constants.FANS_NO_MORE_THAN){
 				Log.error("Too many followers: " + followEl);
 				return null;
@@ -61,14 +63,17 @@ public class FollowParser {
 		return follow;
 	}
 		
+	// 将抓取的微博信息保存至本地文件
  	public static void createFile(List<Element> followeeItems, String urlPath, int currentLevel) {
 		
  		String followerID = Utils.getUserIdFromFollowUrl(urlPath);
 		int level = currentLevel + 1;
 		
+		// 解析每一条followee，提取各部分内容，并写入数据库
 		PreparedStatement ps;
 		for(int i = 0; i < followeeItems.size(); i++){
 			try{
+				// 写入follow表，新的关注关系
 				ps = conn.prepareStatement("INSERT INTO follow (follower, followee, level) VALUES (?, ?, ?)");
 
 				Follow follow = FollowParser.parse(followeeItems.get(i), followerID, level);
@@ -81,6 +86,7 @@ public class FollowParser {
 				}			
 				ps.close();
 				
+				// 在未达到最后一轮的情况下，写入follower表，下一轮抓取的ID
 				if(follow != null && level < Constants.LEVEL){
 					ps = conn.prepareStatement("INSERT INTO follower (follower, level) VALUES (?, ?)");
 	

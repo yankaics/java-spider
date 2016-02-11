@@ -14,6 +14,9 @@ import indi.zhangzqit.javaspider.queue.CommentUrlQueue;
 import indi.zhangzqit.javaspider.utils.Utils;
 import indi.zhangzqit.javaspider.worker.BasicWorker;
 
+/**
+ * 从UrlQueue中取出url，下载页面，分析url，保存已访问rul
+ */       
 public class UrlCommentWorker extends BasicWorker implements Runnable {
 	private static final Logger Log = Logger.getLogger(UrlCommentWorker.class.getName());
 	
@@ -41,6 +44,7 @@ public class UrlCommentWorker extends BasicWorker implements Runnable {
 					
 					gsid = process(result, gsid);
 
+					// 拿完还是空，退出爬虫
 					if(CommentUrlQueue.isEmpty()){
 						if(CommentUrlQueue.isEmpty()){
 							Log.info(">> Add new comment Url...");
@@ -65,6 +69,7 @@ public class UrlCommentWorker extends BasicWorker implements Runnable {
 			Log.error(e);
 		}
 			
+		// 关闭数据库连接
 		try {
 			CommentParser.conn.close();
 			Utils.conn.close();

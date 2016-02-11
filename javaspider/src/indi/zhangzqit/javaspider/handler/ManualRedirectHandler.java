@@ -17,7 +17,7 @@ public class ManualRedirectHandler implements RedirectHandler {
 
 	@Override
 	public boolean isRedirectRequested(HttpResponse arg0, HttpContext arg1) {
-		//手动处理 
+		// 手动处理所有redirect，直接return false 
 		return false;
 	} 
 }

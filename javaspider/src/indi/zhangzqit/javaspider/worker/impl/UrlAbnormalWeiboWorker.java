@@ -15,8 +15,14 @@ import indi.zhangzqit.javaspider.queue.WeiboUrlQueue;
 import indi.zhangzqit.javaspider.utils.Utils;
 import indi.zhangzqit.javaspider.worker.BasicWorker;
 
+/**
+ * 从UrlQueue中取出url，下载页面，分析url，保存已访问rul
+ */
 public class UrlAbnormalWeiboWorker extends BasicWorker implements Runnable {
+
 	private static final Logger Log = Logger.getLogger(UrlAbnormalWeiboWorker.class.getName());
+
+	// 下载对应页面并分析出页面对应URL，放置在未访问队列中
 	protected String dataHandler(String url){
 		Log.info("**************************************************");
 		Log.info("collected: " + WeiboUrlQueue.size());
@@ -37,10 +43,12 @@ public class UrlAbnormalWeiboWorker extends BasicWorker implements Runnable {
 		String gsid = login(username, password);
 		String result = null;
 		try {
+			// 若登录失败，则执行一轮切换账户的操作，如果还失败，则退出     
 			if(gsid == null){
 				gsid = switchAccount();
 			}
 		
+			// 登录成功
 			if(gsid != null) {
 				while(!WeiboUrlQueue.isEmpty()) {
 					result = dataHandler(WeiboUrlQueue.outElement() + "&" + gsid);
@@ -64,6 +72,7 @@ public class UrlAbnormalWeiboWorker extends BasicWorker implements Runnable {
 			Log.error(e);
 		}
 		
+		// 关闭数据库连接
 		try {
 			WeiboParser.conn.close();
 			Utils.conn.close();

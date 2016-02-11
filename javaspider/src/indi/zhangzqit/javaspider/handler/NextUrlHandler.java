@@ -23,6 +23,9 @@ public class NextUrlHandler {
 	public static final Logger Log = Logger.getLogger(NextUrlHandler.class
 			.getName());
 
+	/**
+	 * 从抓取页面的content HTML中解析出下一页的URL，并添加至UrlQueue
+	 */
 	public static String addNextWeiboUrl(Page page){
 		String content = page.getContent();
 		Document doc = page.getContentDoc();
@@ -30,12 +33,15 @@ public class NextUrlHandler {
 		if(content == null){
 			return Constants.ACCOUNT_FORBIDDEN;
 		}
+		// 系统繁忙或账号被封
 		if(content.equals(Constants.ACCOUNT_FORBIDDEN) || content.equals(Constants.SYSTEM_BUSY)){
 			return content;
 		}
+		// 微博页面异常的显示“没有发布微博”，跳转至下一页继续处理
 		else if(content.startsWith(Constants.SYSTEM_EMPTY)){
 			Log.info(">> 当前页面显示“没有发布微博”：" + content);
 		}
+		// 正常
 		else{
 			
 			Element pageEl = doc.getElementById("pagelist");
@@ -44,6 +50,7 @@ public class NextUrlHandler {
 				List<Element> hrefEls = pageEl.getElementsByTag("a");
 				for(Element el: hrefEls){
 					if(el.toString().contains("下页")){
+						// 从href中解析出page的页码，牵涉到gsid会自动带上的问题，所以干净的解析出页码
 						WeiboUrlQueue.addElement("http://weibo.cn" + el.attr("href").split("&gsid=")[0]); 
 						break;
 					}

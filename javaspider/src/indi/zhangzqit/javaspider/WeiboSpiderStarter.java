@@ -27,6 +27,7 @@ public class WeiboSpiderStarter {
 	public static void main(String[] args) {
 		initializeParams();
 
+		// 判断任务类型
 		if (TYPE.equals("weibo")) {
 			fetchWeibo();
 		} else if (TYPE.equals("comment")) {
@@ -42,6 +43,9 @@ public class WeiboSpiderStarter {
 		}
 	}
 
+	/**
+	 * 从配置文件中读取配置信息：数据库连接、相关文件根目录、爬虫任务类型
+	 */
 	private static void initializeParams() {
 		InputStream in;
 		try {
@@ -99,6 +103,7 @@ public class WeiboSpiderStarter {
 	private static void fetchWeibo() {
 		Log
 				.info("\n\n\n**********************************************************[Fetch Weibo]\n");
+		// 初始化账号队列
 		Utils.readAccountFromFile();
 
 		// 初始化链接
@@ -113,7 +118,6 @@ public class WeiboSpiderStarter {
 	private static void fetchAbnormalWeibo() {
 		Log
 				.info("\n\n\n**********************************************************[Abnormal Weibo]\n");
-		// 初始化账号队列
 		Utils.readAccountFromFile();
 
 		Utils.initializeAbnormalWeiboUrl();

@@ -49,10 +49,13 @@ public class RepostParser {
 			String tempAuthor = repostEl.getElementsByAttribute("href").get(0).attr("href");
 			repost.setAuthor(tempAuthor.substring(tempAuthor.lastIndexOf("/") + 1, tempAuthor.lastIndexOf("?")));
 			
+			//获取一条评论内的有效内容，包括@的人
+			//因为内容和时间的标签和发布者的标签并列在一起，所以要截前后片段  
 			String tempContent = repostEl.toString();
 			String tempContentString = tempContent.substring(tempContent.indexOf(">:") + 2,tempContent.indexOf("<span class="));
 			repost.setContent(tempContentString.substring(0, tempContentString.indexOf("&nbsp")));
 			
+			//获取时间
 			repost.setTime(Utils.parseDate(repostEl.getElementsByClass("ct").get(0).text().split("来自")[0]));
 
 		}

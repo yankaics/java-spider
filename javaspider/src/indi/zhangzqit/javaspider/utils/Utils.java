@@ -49,7 +49,7 @@ public class Utils {
 	 */
 	public static String parseDate(String weiboTimeStr) {
 
-		Calendar currentTime = Calendar.getInstance();
+		Calendar currentTime = Calendar.getInstance();// 使用默认时区和语言环境获得一个日历。
 
 		if (weiboTimeStr.contains("分钟前")) {
 			int minutes = Integer.parseInt(weiboTimeStr.split("分钟前")[0]);
@@ -91,7 +91,11 @@ public class Utils {
 		return null;
 	}
 
+	/**
+	 * 根据logType将日志写入相应的文件
+	 */
 	public static void writeLog(int logType, String logStr) {
+		// 选取log类型
 		String filePath = null;
 		switch (logType) {
 		case LogType.SWITCH_ACCOUNT_LOG:
@@ -110,6 +114,7 @@ public class Utils {
 			return;
 		}
 
+		// 写入日志
 		try {
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			if (logType == LogType.WEIBO_LOG) {
@@ -125,6 +130,9 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * 将异常账号写入文件
+	 */
 	public static void writeAbnormalAccount(String account) throws IOException {
 		FileWriter fileWriter = new FileWriter(Constants.ABNORMAL_ACCOUNT_PATH,
 				true);
@@ -133,6 +141,7 @@ public class Utils {
 		fileWriter.close();
 	}
 
+	// 从url中解析出当前用户的ID
 	public static String getUserIdFromUrl(String url) {
 		int startIndex = url.lastIndexOf("/");
 		int endIndex = url.indexOf("?");
@@ -143,6 +152,7 @@ public class Utils {
 		return url.substring(startIndex + 1, endIndex);
 	}
 
+	// 从follow url中解析出当前用户的ID
 	public static String getUserIdFromFollowUrl(String url) {
 		int startIndex = 16;
 		int endIndex = url.indexOf("/follow");
@@ -177,6 +187,9 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * 数据库中读取用户账号，并生成第一页微博的url，放入WeiboUrlQueue
+	 */
 	public static synchronized void initializeWeiboUrl() {
 		String querySql = "SELECT accountID FROM USER WHERE isFetched = 0 ORDER BY id LIMIT 1";
 		PreparedStatement ps = null;
@@ -203,11 +216,13 @@ public class Utils {
 
 			conn.commit();
 			if (accountID != null) {
+				// 提交成功后，再放入队列
 				WeiboUrlQueue.addElement(Constants.WEIBO_BASE_STR + accountID
 						+ "?page=1");
 			}
 		} catch (SQLException e) {
 			Log.error(e);
+			// 提交失败 roll back，并将放入队列的URL拿出来
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
@@ -217,6 +232,9 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * 数据库中读取用微博账号，并生成第一页评论的url，放入CommentUrlQueue
+	 */
 	public static synchronized void initializeCommentUrl() {
 		String querySql = "SELECT weiboID FROM weibo WHERE isCommentFetched = 0 LIMIT 1";
 		PreparedStatement ps = null;
@@ -243,11 +261,13 @@ public class Utils {
 
 			conn.commit();
 			if (weiboID != null) {
+				// 提交成功后，再放入队列
 				CommentUrlQueue.addElement(Constants.COMMENT_BASE_STR + weiboID
 						+ "?page=1");
 			}
 		} catch (SQLException e) {
 			Log.error(e);
+			// 提交失败 roll back，并将放入队列的URL拿出来
 			try {
 				conn.rollback();
 			} catch (SQLException e1) {
@@ -257,6 +277,9 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * 数据库中读取微博账号，并生成第一页转发的url，放入WeiboUrlQueue
+	 */
 	public static synchronized void initializeRepostUrl() {
 		String querySql = "SELECT weiboID FROM weibo WHERE isRepostFetched = 0 LIMIT 1";
 		PreparedStatement ps = null;
@@ -297,6 +320,9 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * 从account.txt中读取用户账号，并生成用户主页的url，放入AccountInfoUrlQueue
+	 */
 	public static void initializeAbnormalWeiboUrl() {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -388,6 +414,7 @@ public class Utils {
 	public static String checkContent(String content, String url,
 			int fetcherType) throws IOException {
 		String returnMsg = null;
+		// 检测当前访问的用户是否为异常账号
 		if (content.contains("<div class=\"me\">抱歉，您当前访问的用户状态异常，暂时无法访问。</div>")
 				|| content.contains("<div class=\"me\">用户不存在哦!</div>")
 				|| content.contains("<div class=\"me\">请求页不存在")) {
@@ -418,6 +445,7 @@ public class Utils {
 			Log.info("异常账号数         ：" + AbnormalAccountUrlQueue.size());
 			Log.info("----------------------------------");
 			returnMsg = Constants.OK;
+			// 检测账号是否被冻结
 		} else if (content.contains(Constants.FORBIDDEN_PAGE_TITILE)
 				|| content
 						.contains("<div class=\"c\">你的微博账号出现异常被暂时冻结!<br/>完成以下操作即可激活你的微博。<br/></div>")
